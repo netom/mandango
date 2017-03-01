@@ -16,7 +16,7 @@ namespace Mandango\Cache;
  *
  * @author Fábián Tamás László <giganetom@gmail.com>
  */
-class ApcuCache implements CacheInterface
+class ApcCache implements CacheInterface
 {
     private static $PREFIX = 'MDG_';
 

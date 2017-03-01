@@ -19,8 +19,9 @@ class ApcCacheTest extends CacheTestCase
     {
         if (extension_loaded('apc')) {
             return new ApcCache();
-        } else {
-            $this->markTestSkipped();
+        } elseif (extension_loaded('apcu')) {
+            return new ApcuCache();
         }
+        $this->fail("Neither APC nor APCu is available.");
     }
 }
