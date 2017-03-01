@@ -38,8 +38,12 @@ class Core extends Extension
         ));
 
         $this->addOptions(array(
-            'default_output'    => null,
-            'default_behaviors' => array(),
+            'default_output'                 => null,
+            'default_behaviors'              => array(),
+            'repository_parent_class'        => \Mandango\Repository::class,
+            'query_parent_class'             => \Mandango\Query::class,
+            'document_parent_class'          => \Mandango\Document\Document::class,
+            'embedded_document_parent_class' => \Mandango\Document\EmbeddedDocument::class,
         ));
     }
 
@@ -560,12 +564,12 @@ EOF
         $this->definitions['document_base'] = $definition = new Definition($classes['document_base'], $output);
         $definition->setAbstract(true);
         if ($this->configClass['isEmbedded']) {
-            $definition->setParentClass('\Mandango\Document\EmbeddedDocument');
+            $definition->setParentClass($this->addFirstBackslash($this->getOption('embedded_document_parent_class')));
         } else {
             if ($this->configClass['inheritance']) {
                 $definition->setParentClass('\\'.$this->configClass['inheritance']['class']);
             } else {
-                $definition->setParentClass('\Mandango\Document\Document');
+                $definition->setParentClass($this->addFirstBackslash($this->getOption('document_parent_class')));
             }
         }
         $definition->setDocComment(<<<EOF
@@ -600,7 +604,7 @@ EOF
 
             $this->definitions['repository_base'] = $definition = new Definition($classes['repository_base'], $output);
             $definition->setAbstract(true);
-            $definition->setParentClass('\\Mandango\\Repository');
+            $definition->setParentClass($this->addFirstBackslash($this->getOption('repository_parent_class')));
             $definition->setDocComment(<<<EOF
 /**
  * Base class of repository of {$this->class} document.
@@ -632,7 +636,7 @@ EOF
 
             $this->definitions['query_base'] = $definition = new Definition($classes['query_base'], $output);
             $definition->setAbstract(true);
-            $definition->setParentClass('\\Mandango\\Query');
+            $definition->setParentClass($this->addFirstBackslash($this->getOption('query_parent_class')));
             $definition->setDocComment(<<<EOF
 /**
  * Base class of query of {$this->class} document.
@@ -1106,5 +1110,14 @@ EOF
     private function isBooleanFalseValue($value)
     {
         return in_array($value, array(false, 0, '0'), true);
+    }
+
+    private function addFirstBackslash($className)
+    {
+        if ($className[0] !== '\\') {
+            return '\\' . $className;
+        }
+
+        return $className;
     }
 }
