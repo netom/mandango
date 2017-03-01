@@ -347,6 +347,12 @@ return array(
             'commentsLocal' => array('class' => 'Model\Comment'),
         ),
     ),
+    'Model\IdAsArray' => array(
+        'idGenerator' => 'none',
+        'fields' => array(
+            'name' => 'string',
+        )
+    ),
     // id generators
     'Model\NoneIdGenerator' => array(
         'idGenerator' => 'none',

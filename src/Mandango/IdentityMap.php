@@ -11,6 +11,8 @@
 
 namespace Mandango;
 
+use JsonSerializable;
+use InvalidArgumentException;
 use Mandango\Document\Document;
 
 /**
@@ -39,7 +41,7 @@ class IdentityMap implements IdentityMapInterface
      */
     public function set($id, Document $document)
     {
-        $this->documents[(string) $id] = $document;
+        $this->documents[$this->idToString($id)] = $document;
     }
 
     /**
@@ -47,7 +49,7 @@ class IdentityMap implements IdentityMapInterface
      */
     public function has($id)
     {
-        return isset($this->documents[(string) $id]);
+        return isset($this->documents[$this->idToString($id)]);
     }
 
     /**
@@ -55,7 +57,7 @@ class IdentityMap implements IdentityMapInterface
      */
     public function get($id)
     {
-        return $this->documents[(string) $id];
+        return $this->documents[$this->idToString($id)];
     }
 
     /**
@@ -79,7 +81,7 @@ class IdentityMap implements IdentityMapInterface
      */
     public function remove($id)
     {
-        unset($this->documents[(string) $id]);
+        unset($this->documents[$this->idToString($id)]);
     }
 
     /**
@@ -88,5 +90,27 @@ class IdentityMap implements IdentityMapInterface
     public function clear()
     {
         $this->documents = array();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function idToString($id)
+    {
+        if (is_object($id)) {
+            if (method_exists($id, '__toString')) {
+                return (string) $id;
+            }
+            if ($id instanceof JsonSerializable) { //MongoDB\Model\BSONDocument
+                return (string) json_encode($id);
+            }
+
+            throw new InvalidArgumentException('Invalid document id. Object has to have __toString or implements \JsonSerializable');
+        }
+        if (is_array($id)) {
+            return (string) json_encode($id);
+        }
+
+        return (string) $id;
     }
 }

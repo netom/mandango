@@ -8,6 +8,7 @@
         $repository = $this->getRepository();
         $mandango = $repository->getMandango();
         $documentClass = $repository->getDocumentClass();
+        $identityMapObject = $repository->getIdentityMap();
         $identityMap =& $repository->getIdentityMap()->allByReference();
 {% if config_class.inheritable and 'single' == config_class.inheritable.type %}
         $identityMaps = array();
@@ -37,7 +38,7 @@
 
         $documents = array();
         foreach ($this->createCursor() as $data) {
-            $id = (string)$data['_id'];
+            $id = $identityMapObject->idToString($data['_id']);
 {% if config_class.inheritable and 'single' == config_class.inheritable.type %}
             $documentClass = null;
             $identityMap = null;

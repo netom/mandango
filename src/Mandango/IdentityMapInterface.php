@@ -87,4 +87,13 @@ interface IdentityMapInterface
      * @api
      */
     function clear();
+
+    /**
+     * Convert id to string
+     *
+     * @param $id
+     *
+     * @return string
+     */
+    function idToString($id);
 }

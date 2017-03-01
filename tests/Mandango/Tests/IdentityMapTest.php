@@ -12,6 +12,8 @@
 namespace Mandango\Tests;
 
 use Mandango\IdentityMap;
+use MongoDB\BSON\ObjectID;
+use MongoDB\Model\BSONDocument;
 
 class IdentityMapTest extends TestCase
 {
@@ -62,5 +64,27 @@ class IdentityMapTest extends TestCase
         // clear
         $identityMap->clear();
         $this->assertSame(array(), $identityMap->all());
+    }
+
+    public function testIdToString()
+    {
+        $identityMap = new IdentityMap();
+
+        $id = $this->generateObjectId();
+        $this->assertEquals($id, $identityMap->idToString(new ObjectID($id)));
+
+        $idAsArray = ['a' => 1, 'b' => 2];
+        $this->assertEquals(json_encode($idAsArray), $identityMap->idToString(new BSONDocument($idAsArray)));
+
+        $idAsArray = ['a' => 1, 'b' => 2];
+        $this->assertEquals(json_encode($idAsArray), $identityMap->idToString($idAsArray));
+    }
+
+    public function testExceptionIdToString()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $identityMap = new IdentityMap();
+        $identityMap->idToString(new \DateTime());
     }
 }

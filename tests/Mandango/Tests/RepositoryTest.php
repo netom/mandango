@@ -235,6 +235,21 @@ class RepositoryTest extends TestCase
         $this->assertEquals($array1, $array2);
     }
 
+    public function testFindByIdWithIdAsArray()
+    {
+        $repository = $this->getRepository('Model\IdAsArray');
+        $documents = [
+            ['_id' => ['a' => 1, 'b' => 2], 'name' => 'first'],
+            ['_id' => ['a' => 1, 'b' => 3], 'name' => 'second'],
+        ];
+        $repository->getCollection()->insertMany($documents);
+
+        $results = $repository->findById([['a' => 1, 'b' => 2]]);
+
+        $this->assertCount(1, $results);
+        $this->assertEquals($documents[0]['name'], $results[0]->getName());
+    }
+
     public function testCount()
     {
         $criteria = array('is_active' => false);

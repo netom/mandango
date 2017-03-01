@@ -225,7 +225,7 @@ abstract class Repository
         $documents = array();
         foreach ($mongoIds as $id) {
             if ($this->identityMap->has($id)) {
-                $documents[(string) $id] = $this->identityMap->get($id);
+                $documents[$this->identityMap->idToString($id)] = $this->identityMap->get($id);
             }
         }
 
@@ -241,7 +241,7 @@ abstract class Repository
     {
         $ids = array();
         foreach ($mongoIds as $id) {
-            if (!isset($cachedDocuments[(string) $id])) {
+            if (!isset($cachedDocuments[$this->identityMap->idToString($id)])) {
                 $ids[] = $id;
             }
         }

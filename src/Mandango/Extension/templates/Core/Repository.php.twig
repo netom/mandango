@@ -93,6 +93,7 @@
             $documents = array($documents);
         }
 
+        $identityMapObject = $this->getIdentityMap();
         $identityMap =& $this->getIdentityMap()->allByReference();
         $collection = $this->getCollection();
 
@@ -145,7 +146,7 @@
                     $document->setId($data['_id']);
                     $document->setIsNew(false);
                     $document->clearModified();
-                    $identityMap[(string) $data['_id']] = $document;
+                    $identityMap[$identityMapObject->idToString($data['_id'])] = $document;
 {% if config_class._has_groups %}
                     $document->resetGroups();
 {% endif %}
@@ -191,7 +192,7 @@
                 $document->setId($data['_id']);
                 $document->setIsNew(false);
                 $document->clearModified();
-                $identityMap[(string) $data['_id']] = $document;
+                $identityMap[$identityMapObject->idToString($data['_id'])] = $document;
 
 {% if config_class._has_groups %}
                 $document->resetGroups();
@@ -293,9 +294,10 @@
 {% endfor %}
         }
 
+        $identityMapObject = $this->getIdentityMap();
         $identityMap =& $this->getIdentityMap()->allByReference();
         foreach ($documents as $document) {
-            unset($identityMap[(string) $document->getId()]);
+            unset($identityMap[$identityMapObject->idToString($document->getId())]);
             $document->setIsNew(true);
             $document->setId(null);
         }
