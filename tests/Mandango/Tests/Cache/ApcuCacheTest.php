@@ -18,6 +18,12 @@ class ApcuCacheTest extends CacheTestCase
     protected function getCacheDriver()
     {
         if (extension_loaded('apcu')) {
+            if (php_sapi_name() === 'cli' && !ini_get('apc.enable_cli')) {
+                $this->markTestSkipped(
+                    'The APCu in CLI mode not available. Set "apc.enable_cli = 1" in php.ini.'
+                );
+            }
+
             return new ApcuCache();
         } else {
             $this->markTestSkipped();
