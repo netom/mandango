@@ -184,7 +184,10 @@
                 }
 {% endfor %}
                 $data = $document->queryForSave();
-                {{ mandango_id_generator(config_class, "$data['_id']", 16) }}
+                $data = $document->queryForSave();
+                if (!array_key_exists('_id', $data)) {
+                    {{ mandango_id_generator(config_class, "$data['_id']", 16) }}
+                }
 
                 $result = $collection->insertOne($data);
                 $data['_id'] = $result->getInsertedId();

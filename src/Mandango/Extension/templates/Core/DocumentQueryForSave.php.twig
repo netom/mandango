@@ -45,6 +45,10 @@
                     }
                     $query =& $query[$name];
                 }
+{% else %}
+                if ($this->getId() !== null) {
+                    $query['_id'] = (string) $this->getId();
+                }
 {% endif %}
 {% for name, field in config_class.fields %}
 {% if field.inherited is not defined or not field.inherited %}
