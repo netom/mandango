@@ -396,4 +396,19 @@ abstract class Repository
     {
         return $this->getConnection()->getDatabase();
     }
+
+    /**
+     * Remove all indexes
+     */
+    public function dropIndexes()
+    {
+        $c = $this->getCollection();
+        foreach ($c->listIndexes() as $i) {
+            $n = $i->getName();
+            if ($n == '_id_') {
+                break;
+            }
+            $c->dropIndex($n);
+        }
+    }
 }

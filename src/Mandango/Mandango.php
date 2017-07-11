@@ -337,6 +337,7 @@ class Mandango
     public function ensureAllIndexes()
     {
         foreach ($this->getAllRepositories() as $repository) {
+            $repository->dropIndexes();
             $repository->ensureIndexes();
         }
     }

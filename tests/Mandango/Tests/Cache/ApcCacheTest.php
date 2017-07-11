@@ -11,16 +11,14 @@
 
 namespace Mandango\Tests\Cache;
 
-use Mandango\Cache\ApcuCache;
-
 class ApcCacheTest extends CacheTestCase
 {
     protected function getCacheDriver()
     {
         if (extension_loaded('apc')) {
-            return new ApcCache();
+            return new \Mandango\Cache\ApcCache();
         } elseif (extension_loaded('apcu')) {
-            return new ApcuCache();
+            return new \Mandango\Cache\ApcuCache();
         }
         $this->fail("Neither APC nor APCu is available.");
     }
