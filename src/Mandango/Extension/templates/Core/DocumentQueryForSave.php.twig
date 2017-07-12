@@ -16,7 +16,7 @@
 
 {% else %}
         $isNew = $this->isNew();
-        $query = array();
+        $query = [];
         $reset = false;
 
 {% endif %}
@@ -134,8 +134,8 @@
 
                     $add = null;
                     foreach ($group->getAdd() as $key => $document) {
-                        $q = $document->queryForSave(array(), true);
-                        // TODO: use a flag on the document instead, this makes me puke.
+                        $q = $document->queryForSave([], true);
+                        // TODO: use a flag on the document instead
                         foreach (explode('.', $document->_path) as $name) {
                             if (0 === strpos($name, '_add')) {
                                 $name = substr($name, 4);

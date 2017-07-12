@@ -364,7 +364,7 @@ class CoreQueryForSaveTest extends TestCase
         $comments[0]->getInfos()->add($this->mandango->create('Model\Info')->setName('insertinfo1')->setNote(678));
         $comments[1]->getInfos()->add($this->mandango->create('Model\Info')->setName('insertinfo2')->setNote(876));
 
-        $this->assertSame(array(
+        $this->assertSame([
             '$set' => array(
                 'title' => 'foobar',
                 'comments.0.name' => '234',
@@ -405,6 +405,6 @@ class CoreQueryForSaveTest extends TestCase
                     ),
                 ),
             ),
-        ), $article->queryForSave());
+        ], $article->queryForSave());
     }
 }

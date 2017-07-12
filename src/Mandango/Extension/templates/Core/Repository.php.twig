@@ -230,7 +230,28 @@
                 }
 {% endfor %}
                 $query = $document->queryForSave();
+
+                // HACK: Split $pushall xxx - $unset xxx.N queries in two:
+                $query2 = [];
+
+                $pushall = array_keys(array_key_exists('$pushAll', $query) ? $query['$pushAll'] : []);
+                $unset   = array_keys(array_key_exists('$unset', $query) ? $query['$unset'] : []);
+
+                foreach ($pushall as $pa) {
+                    foreach ($unset as $un) {
+                        if (strpos($pa, $un) !== true) {
+                            $query2['$pushAll'] = $query['$pushAll'];
+                            unset($query['$pushAll']);
+                            break;
+                        }
+                    }
+                }
+
                 $collection->updateOne(array('_id' => $this->idToMongo($document->getId())), $query, $updateOptions);
+                if (!empty($query2)) {
+                    $collection->updateOne(array('_id' => $this->idToMongo($document->getId())), $query2, $updateOptions);
+                }
+
                 $document->clearModified();
 {% if config_class._has_groups %}
                 $document->resetGroups();
