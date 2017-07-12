@@ -204,6 +204,7 @@ abstract class AbstractGroup implements \Countable, \IteratorAggregate
      */
     public function clearSaved()
     {
+        $this->_saved_data = null;
         $this->saved = null;
     }
 
