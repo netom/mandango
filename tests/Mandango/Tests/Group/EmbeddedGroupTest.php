@@ -80,14 +80,30 @@ class EmbeddedGroupTest extends TestCase
     {
         $article = $this->mandango->create('Model\Article');
         $article->setTitle('test');
-        $group = $article->getComments();
-        $group->add($this->mandango->create('Model\Comment')->setName('a'));
-        $group->add($this->mandango->create('Model\Comment')->setName('b'));
+
+        $this->assertCount(0, $article->getComments());
+
+        $article->getComments()->add($this->mandango->create('Model\Comment')->setName('a'));
+        $article->getComments()->add($this->mandango->create('Model\Comment')->setName('b'));
+
+        $this->assertCount(2, $article->getComments());
         $article->save();
+        $this->assertCount(2, $article->getComments());
+        $article->refresh();
+        $this->assertCount(2, $article->getComments());
 
         $article->getComments()->replace([
             $this->mandango->create('Model\Comment')->setName('c')
         ]);
+        $this->assertCount(1, $article->getComments());
         $article->save();
+        //$this->assertCount(1, $article->getComments()->all());
+        $article->refresh();
+        $this->assertCount(1, $article->getComments());
+        $cur = $this->mandango->getRepository('Model\Article')->getCollection()->find(['_id' => $article->getId()]);
+        $this->assertEquals(1, count($cur));
+        foreach ($cur as $a) {
+            $this->assertCount(1, $a['comments']);
+        }
     }
 }

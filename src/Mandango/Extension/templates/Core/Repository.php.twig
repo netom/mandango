@@ -225,31 +225,51 @@
                 }
 {% endfor %}
 {% for name, embedded in config_class.embeddedsMany %}
+                $group = $document->get{{ name|ucfirst }}();
                 foreach ($document->get{{ name|ucfirst }}() as $mdoc) {
                     $mdoc->preUpdateEvent();
                 }
 {% endfor %}
                 $query = $document->queryForSave();
 
-                // HACK: Split $pushall xxx - $unset xxx.N queries in two:
+                // HACK: Split $pushall xxx - $unset xxx.N queries in three:
+                // 1. $unset
+                // 2. $pull
+                // 3. $pushAll
                 $query2 = [];
 
                 $pushall = array_keys(array_key_exists('$pushAll', $query) ? $query['$pushAll'] : []);
                 $unset   = array_keys(array_key_exists('$unset', $query) ? $query['$unset'] : []);
 
-                foreach ($pushall as $pa) {
-                    foreach ($unset as $un) {
-                        if (strpos($pa, $un) !== true) {
-                            $query2['$pushAll'] = $query['$pushAll'];
-                            unset($query['$pushAll']);
-                            break;
+                $query1 = $query;
+                $query2 = [];
+                $query3 = [];
+
+                unset($query1['$pushAll']);
+                $pull = [];
+                if (!empty($query1['$unset'])) {
+                    foreach ($query1['$unset'] as $k => $v) {
+                        // Is this an array element?
+                        $path = explode('.', $k);
+                        if (is_numeric(array_pop($path))) {
+                            $pull[implode('.', $path)] = null;
                         }
                     }
                 }
 
-                $collection->updateOne(array('_id' => $this->idToMongo($document->getId())), $query, $updateOptions);
-                if (!empty($query2)) {
-                    $collection->updateOne(array('_id' => $this->idToMongo($document->getId())), $query2, $updateOptions);
+                if (!empty($pull)) {
+                    $query2['$pull'] = $pull;
+                }
+
+                if (!empty($query['$pushAll'])) {
+                    $query3['$pushAll'] = $query['$pushAll'];
+                }
+
+                foreach ([$query1, $query2, $query3] as $q) {
+                    if (empty($q)) {
+                        continue;
+                    }
+                    $collection->updateOne(['_id' => $this->idToMongo($document->getId())], $q, $updateOptions);
                 }
 
                 $document->clearModified();
