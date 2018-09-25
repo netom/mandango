@@ -4,6 +4,10 @@ services: mongodb
 
 matrix:
   include:
+    - php: 7.2
+      dist: trusty
+      sudo: false
+      env: PHPVER=PHP72
     - php: 7.1
       dist: trusty
       sudo: false
@@ -12,10 +16,6 @@ matrix:
       dist: trusty
       sudo: false
       env: PHPVER=PHP70
-    - php: 5.6
-      dist: trusty
-      sudo: false
-      env: PHPVER=PHP56
           
 install:
     - ./.travis/install.sh

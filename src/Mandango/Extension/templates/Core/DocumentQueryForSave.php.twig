@@ -142,7 +142,7 @@
                             }
                             $q = $q[$name];
                         }
-                        $query['$pushAll'][$group->_path][] = $q;
+                        $query['$push'][$group->_path]['$each'][] = $q;
                     }
                     foreach ($group->getRemove() as $document) {
                         $query['$unset'][$document->_path] = 1;

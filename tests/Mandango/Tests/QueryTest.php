@@ -262,27 +262,6 @@ class QueryTest extends TestCase
         $this->query->slaveOkay($value);
     }
 
-    public function testSnapshot()
-    {
-        $query = $this->query;
-        $this->assertFalse($query->getSnapshot());
-
-        $this->assertSame($query, $query->snapshot(true));
-        $this->assertTrue($query->getSnapshot());
-
-        $query->snapshot(false);
-        $this->assertFalse($query->getSnapshot());
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @dataProvider      providerNotBoolean
-     */
-    public function testSnapshotNotBoolean($value)
-    {
-        $this->query->snapshot($value);
-    }
-
     public function testTimeout()
     {
         $query = $this->query;
@@ -523,7 +502,7 @@ class QueryTest extends TestCase
         foreach ($articles as $key => $document) {
             $articleArray[$key] = $document->toArray();
         }
-        
+
         $this->assertEquals($queryArray, $articleArray);
 
         foreach ($articles as $article) {
@@ -597,7 +576,6 @@ class QueryTest extends TestCase
             ->limit(10)
             ->skip(25)
             ->batchSize(5)
-            ->snapshot(true)
             ->timeout(100)
         ;
 

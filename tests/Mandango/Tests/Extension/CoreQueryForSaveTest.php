@@ -381,28 +381,34 @@ class CoreQueryForSaveTest extends TestCase
                 'comments.2' => 1,
                 'comments.3' => 1,
             ),
-            '$pushAll' => array(
+            '$push' => array(
                 'comments.0.infos' => array(
-                    array(
-                        'name' => 'insertinfo1',
-                        'note' => '678',
-                    ),
+                    '$each' => array(
+                        array(
+                            'name' => 'insertinfo1',
+                            'note' => '678',
+                        )
+                    )
                 ),
                 'comments.1.infos' => array(
-                    array(
-                        'name' => 'insertinfo2',
-                        'note' => '876',
-                    ),
+                    '$each' => array(
+                        array(
+                            'name' => 'insertinfo2',
+                            'note' => '876',
+                        )
+                    )
                 ),
                 'comments' => array(
-                    array(
-                        'name' => 'inserting1',
-                        'text' => '123',
-                    ),
-                    array(
-                        'name' => 'inserting2',
-                        'text' => '321',
-                    ),
+                    '$each' => array(
+                        array(
+                            'name' => 'inserting1',
+                            'text' => '123',
+                        ),
+                        array(
+                            'name' => 'inserting2',
+                            'text' => '321',
+                        )
+                    )
                 ),
             ),
         ], $article->queryForSave());

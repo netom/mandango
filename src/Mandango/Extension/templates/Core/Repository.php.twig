@@ -232,20 +232,20 @@
 {% endfor %}
                 $query = $document->queryForSave();
 
-                // HACK: Split $pushall xxx - $unset xxx.N queries in three:
+                // HACK: Split $push xxx - $unset xxx.N queries in three:
                 // 1. $unset
                 // 2. $pull
-                // 3. $pushAll
+                // 3. $push
                 $query2 = [];
 
-                $pushall = array_keys(array_key_exists('$pushAll', $query) ? $query['$pushAll'] : []);
-                $unset   = array_keys(array_key_exists('$unset', $query) ? $query['$unset'] : []);
+                $push  = array_keys(array_key_exists('$push', $query) ? $query['$push'] : []);
+                $unset = array_keys(array_key_exists('$unset', $query) ? $query['$unset'] : []);
 
                 $query1 = $query;
                 $query2 = [];
                 $query3 = [];
 
-                unset($query1['$pushAll']);
+                unset($query1['$push']);
                 $pull = [];
                 if (!empty($query1['$unset'])) {
                     foreach ($query1['$unset'] as $k => $v) {
@@ -261,8 +261,8 @@
                     $query2['$pull'] = $pull;
                 }
 
-                if (!empty($query['$pushAll'])) {
-                    $query3['$pushAll'] = $query['$pushAll'];
+                if (!empty($query['$push'])) {
+                    $query3['$push'] = $query['$push'];
                 }
 
                 foreach ([$query1, $query2, $query3] as $q) {

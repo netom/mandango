@@ -34,7 +34,6 @@ abstract class Query implements \Countable, \IteratorAggregate
     private $batchSize;
     private $hint;
     private $slaveOkay;
-    private $snapshot;
     private $timeout;
 
     /**
@@ -438,26 +437,6 @@ abstract class Query implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Set if the snapshot mode is used.
-     *
-     * @param bool $snapshot If the snapshot mode is used.
-     *
-     * @return \Mandango\Query The query instance (fluent interface).
-     *
-     * @api
-     */
-    public function snapshot($snapshot)
-    {
-        if (!is_bool($snapshot)) {
-            throw new \InvalidArgumentException('The snapshot is not a boolean.');
-        }
-
-        $this->snapshot = $snapshot;
-
-        return $this;
-    }
-
-    /**
      * Returns if the snapshot mode is used.
      *
      * @return bool If the snapshot mode is used.
@@ -567,10 +546,6 @@ abstract class Query implements \Countable, \IteratorAggregate
 
         if (null !== $this->slaveOkay) {
             $options['slaveOk'] = $this->slaveOkay;
-        }
-
-        if ($this->snapshot) {
-            $options['modifiers']['$snapshot'] = $this->snapshot;
         }
 
         if (null !== $this->timeout) {
