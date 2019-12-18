@@ -19,25 +19,25 @@ use Mandango\Type\Container as TypeContainer;
  *
  * @author Pablo Díez <pablodip@gmail.com>
  */
-class Mandango extends \Twig_Extension
+class Mandango extends \Twig\Extension\AbstractExtension
 {
     public function getFilters()
     {
-        return array(
-            'ucfirst'    => new \Twig_Filter_Function('ucfirst'),
-            'var_export' => new \Twig_Filter_Function(function ($var) { return var_export($var, true);}),
-            'addslashes' => new \Twig_Filter_Function('addslashes'),
-        );
+        return [
+            new \Twig\TwigFilter('ucfirst',    'ucfirst'),
+            new \Twig\TwigFilter('var_export', function ($var) { return var_export($var, true);}),
+            new \Twig\TwigFilter('addslashes', 'addslashes'),
+        ];
     }
 
     public function getFunctions()
     {
-        return array(
-            'mandango_id_generator'          => new \Twig_Function_Method($this, 'mandangoIdGenerator'),
-            'mandango_id_generator_to_mongo' => new \Twig_Function_Method($this, 'mandangoIdGeneratorToMongo'),
-            'mandango_type_to_mongo'         => new \Twig_Function_Method($this, 'mandangoTypeToMongo'),
-            'mandango_type_to_php'           => new \Twig_Function_Method($this, 'mandangoTypeToPHP'),
-        );
+        return [
+            new \Twig\TwigFunction('mandango_id_generator',          [$this, 'mandangoIdGenerator']),
+            new \Twig\TwigFunction('mandango_id_generator_to_mongo', [$this, 'mandangoIdGeneratorToMongo']),
+            new \Twig\TwigFunction('mandango_type_to_mongo',         [$this, 'mandangoTypeToMongo']),
+            new \Twig\TwigFunction('mandango_type_to_php',           [$this, 'mandangoTypeToPHP']),
+        ];
     }
 
     public function mandangoIdGenerator($configClass, $id, $indent = 8)

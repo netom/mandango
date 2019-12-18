@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cd4e67f2561b59a16f28a716e0acc24b",
+    "content-hash": "f571e620466ad5c7ff1e26deeb52cf13",
     "packages": [
         {
             "name": "mongodb/mongodb",
@@ -68,24 +68,24 @@
         },
         {
             "name": "netom/mondator",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/netom/mondator.git",
-                "reference": "d45769156d4cb6554def4829ee25125262afa4e5"
+                "reference": "6a48fbd5227a1c9542946f0857e6cc361c7d913d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netom/mondator/zipball/d45769156d4cb6554def4829ee25125262afa4e5",
-                "reference": "d45769156d4cb6554def4829ee25125262afa4e5",
+                "url": "https://api.github.com/repos/netom/mondator/zipball/6a48fbd5227a1c9542946f0857e6cc361c7d913d",
+                "reference": "6a48fbd5227a1c9542946f0857e6cc361c7d913d",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0",
-                "twig/twig": "~1.14"
+                "php": ">=7.2",
+                "twig/twig": "~3.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~3.7"
+                "phpunit/phpunit": "~8.0"
             },
             "type": "library",
             "autoload": {
@@ -99,19 +99,19 @@
             ],
             "authors": [
                 {
-                    "name": "Pablo Díez",
-                    "email": "pablodip@gmail.com"
-                },
-                {
                     "name": "Fábián Tamás László",
                     "email": "giganetom@gmail.com"
+                },
+                {
+                    "name": "Pablo Díez",
+                    "email": "pablodip@gmail.com"
                 }
             ],
             "description": "Easy and flexible class generator for PHP",
             "keywords": [
                 "class-generator"
             ],
-            "time": "2015-04-16T12:48:39+00:00"
+            "time": "2019-12-18T12:55:44+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -172,38 +172,95 @@
             "time": "2019-11-27T13:56:44+00:00"
         },
         {
-            "name": "twig/twig",
-            "version": "v1.42.4",
+            "name": "symfony/polyfill-mbstring",
+            "version": "v1.13.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/twigphp/Twig.git",
-                "reference": "e587180584c3d2d6cb864a0454e777bb6dcb6152"
+                "url": "https://github.com/symfony/polyfill-mbstring.git",
+                "reference": "7b4aab9743c30be783b73de055d24a39cf4b954f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e587180584c3d2d6cb864a0454e777bb6dcb6152",
-                "reference": "e587180584c3d2d6cb864a0454e777bb6dcb6152",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/7b4aab9743c30be783b73de055d24a39cf4b954f",
+                "reference": "7b4aab9743c30be783b73de055d24a39cf4b954f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.0",
-                "symfony/polyfill-ctype": "^1.8"
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "ext-mbstring": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.13-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for the Mbstring extension",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "mbstring",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2019-11-27T14:18:11+00:00"
+        },
+        {
+            "name": "twig/twig",
+            "version": "v3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "9b58bb8ac7a41d72fbb5a7dc643e07923e5ccc26"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/9b58bb8ac7a41d72fbb5a7dc643e07923e5ccc26",
+                "reference": "9b58bb8ac7a41d72fbb5a7dc643e07923e5ccc26",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.9",
+                "symfony/polyfill-ctype": "^1.8",
+                "symfony/polyfill-mbstring": "^1.3"
             },
             "require-dev": {
                 "psr/container": "^1.0",
-                "symfony/debug": "^3.4|^4.2",
+                "symfony/debug": "^3.4|^4.2|^5.0",
                 "symfony/phpunit-bridge": "^4.4@dev|^5.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.42-dev"
+                    "dev-master": "3.0-dev"
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Twig_": "lib/"
-                },
                 "psr-4": {
                     "Twig\\": "src/"
                 }
@@ -235,7 +292,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-11-11T16:49:32+00:00"
+            "time": "2019-11-15T20:38:32+00:00"
         }
     ],
     "packages-dev": [

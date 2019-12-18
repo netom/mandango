@@ -1053,7 +1053,7 @@ EOF
         $this->definitions['metadata_factory']->addProperty($property);
     }
 
-    protected function configureTwig(\Twig_Environment $twig)
+    protected function configureTwig(\Twig\Environment $twig)
     {
         $twig->addExtension(new MandangoTwig());
     }

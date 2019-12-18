@@ -31,7 +31,7 @@ class DocumentInitializer extends Extension
         $this->processTemplate($this->definitions['document_base'], file_get_contents(__DIR__.'/templates/DocumentInitializer.php.twig'));
     }
 
-    protected function configureTwig(\Twig_Environment $twig)
+    protected function configureTwig(\Twig\Environment $twig)
     {
         $twig->addExtension(new MandangoTwig());
     }
