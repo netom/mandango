@@ -49,19 +49,15 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf('Mandango\Tests\Type\TestingType', Container::get('testing'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testAddAlreadyExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Container::add('string', 'Mandango\Tests\Type\TestingType');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testAddClassNotSubclassType()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Container::add('testing', '\DateTime');
     }
 
@@ -74,11 +70,9 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf('Mandango\Type\FloatType', $float);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetNotExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Container::get('no');
     }
 
@@ -88,11 +82,9 @@ class ContainerTest extends TestCase
         $this->assertFalse(Container::has('string'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testRemoveNotExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Container::remove('no');
     }
 

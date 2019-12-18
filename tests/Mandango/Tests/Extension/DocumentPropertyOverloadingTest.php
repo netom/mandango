@@ -22,11 +22,9 @@ class DocumentPropertyOverloadingTest extends TestCase
         $this->assertSame('foo', $article->getTitle());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function test__setNameNotExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $article = $this->mandango->create('Model\Article');
         $article->no = 'foo';
     }
@@ -38,11 +36,9 @@ class DocumentPropertyOverloadingTest extends TestCase
         $this->assertSame('foo', $article->title);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function test__getNameNotExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $article = $this->mandango->create('Model\Article');
         $article->no;
     }

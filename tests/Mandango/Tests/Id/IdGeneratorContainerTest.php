@@ -42,19 +42,15 @@ class IdGeneratorContainerTest extends TestCase
         $this->assertInstanceOf('Mandango\Tests\Id\TestingIdGenerator', IdGeneratorContainer::get('testing'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testAddAlreadyExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         IdGeneratorContainer::add('native', 'Mandango\Tests\Id\TestingIdGenerator');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testAddClassNotSubclassType()
     {
+        $this->expectException(\InvalidArgumentException::class);
         IdGeneratorContainer::add('testing', '\DateTime');
     }
 
@@ -67,11 +63,9 @@ class IdGeneratorContainerTest extends TestCase
         $this->assertInstanceOf('Mandango\Id\SequenceIdGenerator', $sequence);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetNotExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         IdGeneratorContainer::get('no');
     }
 
@@ -81,11 +75,9 @@ class IdGeneratorContainerTest extends TestCase
         $this->assertFalse(IdGeneratorContainer::has('native'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testRemoveNotExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         IdGeneratorContainer::remove('no');
     }
 

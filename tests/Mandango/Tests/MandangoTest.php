@@ -89,38 +89,30 @@ class MandangoTest extends TestCase
         $this->assertSame($connections['global'], $mandango->getDefaultConnection());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetConnectionNotExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $mandango = new Mandango($this->metadataFactory, $this->cache);
         $mandango->getConnection('no');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testRemoveConnectionNotExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $mandango = new Mandango($this->metadataFactory, $this->cache);
         $mandango->removeConnection('no');
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testGetDefaultConnectionNotDefaultConnectionName()
     {
+        $this->expectException(\RuntimeException::class);
         $mandango = new Mandango($this->metadataFactory, $this->cache);
         $mandango->getDefaultConnection();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testGetDefaultConnectionNotExist()
     {
+        $this->expectException(\RuntimeException::class);
         $mandango = new Mandango($this->metadataFactory, $this->cache);
         $mandango->setConnection('default', $this->connection);
         $mandango->getDefaultConnection();
@@ -223,19 +215,15 @@ class MandangoTest extends TestCase
         $this->assertEquals(array(), (array)$article6->getCategoryIds());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetRepositoryNotValidEmbeddedDocumentClass()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->mandango->getRepository('Model\Source');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetRepositoryNotValidOtherClass()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->mandango->getRepository('DateTime');
     }
 }

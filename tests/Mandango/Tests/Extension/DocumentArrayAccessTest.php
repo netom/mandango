@@ -15,11 +15,9 @@ use Mandango\Tests\TestCase;
 
 class DocumentArrayAccessTest extends TestCase
 {
-    /**
-     * @expectedException \LogicException
-     */
     public function testOffsetExists()
     {
+        $this->expectException(\LogicException::class);
         $article = $this->mandango->create('Model\Article');
         isset($article['title']);
     }
@@ -31,11 +29,9 @@ class DocumentArrayAccessTest extends TestCase
         $this->assertSame('foo', $article->getTitle());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testOffsetSetNameNotExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $article = $this->mandango->create('Model\Article');
         $article['no'] = 'foo';
     }
@@ -47,20 +43,16 @@ class DocumentArrayAccessTest extends TestCase
         $this->assertSame('bar', $article['title']);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testOffsetGetNameNotExists()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $article = $this->mandango->create('Model\Article');
         $article['no'];
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testOffsetUnset()
     {
+        $this->expectException(\LogicException::class);
         $article = $this->mandango->create('Model\Article');
         unset($article['title']);
     }

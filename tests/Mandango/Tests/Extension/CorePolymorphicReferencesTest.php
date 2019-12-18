@@ -83,11 +83,9 @@ class CorePolymorphicReferencesTest extends TestCase
         $this->assertSame($category, $article->getFriend());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDocumentReferencesOneSetterInvalidClass()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->mandango->create('Model\Article')->setLike(new \DateTime());
     }
 

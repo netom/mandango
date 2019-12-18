@@ -62,11 +62,9 @@ class CoreSingleInheritanceTest extends TestCase
         $this->assertSame($options, $document->getOptions());
     }
 
-    /**
-     * @expectedException \invalidArgumentException
-     */
     public function testDocumentSetFieldNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->mandango->create('Model\RadioFormElement')->set('no', 'foo');
     }
 
@@ -82,11 +80,9 @@ class CoreSingleInheritanceTest extends TestCase
         $this->assertSame($options, $document->get('options'));
     }
 
-    /**
-     * @expectedException \invalidArgumentException
-     */
     public function testDocumentGetFieldNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->mandango->create('Model\RadioFormElement')->get('no');
     }
 

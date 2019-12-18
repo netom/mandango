@@ -17,7 +17,7 @@ use Mandango\Mandango;
 use Mandango\Id\IdGeneratorContainer;
 use Mandango\Type\Container as TypeContainer;
 
-class TestCase extends \PHPUnit_Framework_TestCase
+class TestCase extends \PHPUnit\Framework\TestCase
 {
     static protected $staticConnection;
     static protected $staticGlobalConnection;
@@ -36,7 +36,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected $client;
     protected $database;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!static::$staticConnection) {
             static::$staticConnection = new Connection($this->uri, $this->dbName);
@@ -78,7 +78,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         }
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         IdGeneratorContainer::reset();
         TypeContainer::reset();

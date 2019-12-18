@@ -47,6 +47,7 @@ class CoreRepositoryTest extends TestCase
             $this->mandango->create('Model\Article')->setTitle('a2')->save()->setTitle('a2u'),
         );
         $this->mandango->getRepository('Model\Article')->save($articles);
+        $this->addToAssertionCount(1);
     }
 
     public function testSaveInsertSingleDocument()

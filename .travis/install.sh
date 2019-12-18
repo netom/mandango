@@ -16,4 +16,4 @@ else
     echo "...done."
 fi
 
-./composer.phar install
+composer install

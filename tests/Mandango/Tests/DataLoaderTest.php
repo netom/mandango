@@ -173,11 +173,9 @@ class DataLoaderTest extends TestCase
         $this->assertSame(1, $this->mandango->getRepository('Model\Author')->count());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testLoadMandangoUnitOfWorkHasPending()
     {
+        $this->expectException(\RuntimeException::class);
         $author = $this->mandango->create('Model\Author');
         $this->mandango->persist($author);
 

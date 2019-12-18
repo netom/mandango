@@ -1,3 +1,6 @@
+.phpunit.result.cache
+composer-temp.phar
+composer.phar
 /tests/Model/Base/
 /tests/Model/Mapping/
 /vendor/

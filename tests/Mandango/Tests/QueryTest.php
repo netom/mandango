@@ -18,7 +18,7 @@ class QueryTest extends TestCase
     protected $identityMap;
     protected $query;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -31,7 +31,7 @@ class QueryTest extends TestCase
         $query = new \Model\CategoryQuery($repository = $this->mandango->getRepository('Model\Category'));
         $this->assertSame($repository, $query->getRepository());
         $hash = $query->getHash();
-        $this->assertInternalType('string', $hash);
+        $this->assertIsString($hash);
         $this->assertSame($hash, $query->getHash());
     }
 
@@ -106,11 +106,11 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
      * @dataProvider      providerNotArrayOrNull
      */
     public function testReferencesNotArrayOrNull($value)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->query->references($value);
     }
 
@@ -132,11 +132,11 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
      * @dataProvider      providerNotArrayOrNull
      */
     public function testSortNotArrayOrNull($value)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->query->sort($value);
     }
 
@@ -156,11 +156,11 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
      * @dataProvider      providerNotValidIntOrNull
      */
     public function testLimitNotValidIntOrNull($value)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->query->limit($value);
     }
 
@@ -180,11 +180,11 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
      * @dataProvider      providerNotValidIntOrNull
      */
     public function testSkipNotValidIntOrNull($value)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->query->skip($value);
     }
 
@@ -204,11 +204,11 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
      * @dataProvider      providerNotValidIntOrNull
      */
     public function testBatchSizeNotValidIntOrNull($value)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->query->batchSize($value);
     }
 
@@ -230,11 +230,11 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
      * @dataProvider      providerNotArrayOrNull
      */
     public function testHintNotArrayOrNull($value)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->query->hint($value);
     }
 
@@ -254,11 +254,11 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
      * @dataProvider      providerNotBoolean
      */
     public function testSlaveOkayNotBoolean($value)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->query->slaveOkay($value);
     }
 
@@ -278,11 +278,11 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
      * @dataProvider      providerNotValidIntOrNull
      */
     public function testTimeoutNotValidIntOrNull($value)
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->query->timeout($value);
     }
 
@@ -478,11 +478,9 @@ class QueryTest extends TestCase
         }
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testAllReferencesNotExist()
     {
+        $this->expectException(\RuntimeException::class);
         $this->mandango->getRepository('Model\Article')->createQuery()->references(array('no'))->all();
     }
 

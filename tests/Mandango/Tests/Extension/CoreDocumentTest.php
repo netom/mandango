@@ -129,11 +129,9 @@ class CoreDocumentTest extends TestCase
         $this->assertSame(array('author'), $query->getReferencesCache());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testReferencesOneSetterClassInvalid()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->mandango->create('Model\Article')->setAuthor($this->mandango->create('Model\Category'));
     }
 
@@ -734,11 +732,9 @@ class CoreDocumentTest extends TestCase
         $this->assertSame($source, $article->getSource());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testSetMethodInvalidDataName()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->mandango->create('Model\Article')->set('no', 'foo');
     }
 
@@ -767,11 +763,9 @@ class CoreDocumentTest extends TestCase
         $this->assertSame($article->getComments(), $article->get('comments'));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetMethodInvalidDataName()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->mandango->create('Model\Article')->get('no');
     }
 

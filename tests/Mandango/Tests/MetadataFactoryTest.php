@@ -91,11 +91,9 @@ class MetadataFactoryTest extends TestCase
         $this->assertFalse($metadata->isDocumentClass('Model\Comment'));
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testIsDocumentClassClassDoesNotExist()
     {
+        $this->expectException(\LogicException::class);
         $metadata = new MetadataFactory();
         $metadata->isDocumentClass('Model\User');
     }
@@ -108,11 +106,9 @@ class MetadataFactoryTest extends TestCase
         $this->assertFalse($metadata->isEmbeddedDocumentClass('Model\Article'));
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testIsEmbeddedDocumentClassClassDoesNotExist()
     {
+        $this->expectException(\LogicException::class);
         $metadata = new MetadataFactory();
         $metadata->isEmbeddedDocumentClass('Model\User');
     }
@@ -125,11 +121,9 @@ class MetadataFactoryTest extends TestCase
         $this->assertSame('ups', $metadata->getClass('Model\Comment'));
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testGetClassInfoClassDoesNotExist()
     {
+        $this->expectException(\LogicException::class);
         $metadata = new MetadataFactory();
         $metadata->getClass('Model\User');
     }

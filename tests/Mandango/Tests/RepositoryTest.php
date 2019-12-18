@@ -289,6 +289,7 @@ class RepositoryTest extends TestCase
         $repository = new RepositoryMock($this->mandango);
         $repository->setCollection($collection);
         $repository->update($criteria, $newObject);
+        $this->addToAssertionCount(1);
     }
 
     public function testRemove()
@@ -308,6 +309,7 @@ class RepositoryTest extends TestCase
         $repository = new RepositoryMock($this->mandango);
         $repository->setCollection($collection);
         $repository->remove($criteria);
+        $this->addToAssertionCount(1);
     }
 
     public function testAggregate()
@@ -491,11 +493,9 @@ class RepositoryTest extends TestCase
         $this->assertSame($results, $repository->mapReduce($map, $reduce, $out, $query));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testMapReduceRuntimeExceptionOnError()
     {
+        $this->expectException(\RuntimeException::class);
         $collectionName = 'myCollectionName';
 
         $result = array('ok' => false, 'errmsg' => $errmsg = 'foobarbarfooups');
