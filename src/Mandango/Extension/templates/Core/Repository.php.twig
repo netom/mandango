@@ -138,6 +138,10 @@
             }
 
             if ($a) {
+                if (!array_key_exists('session', $insertManyOptions)) {
+                    $insertManyOptions['session'] = $this->getSession();
+                }
+
                 $collection->insertMany(array_values($a), $insertManyOptions);
 
                 foreach ($a as $oid => $data) {
@@ -189,7 +193,9 @@
                     {{ mandango_id_generator(config_class, "$data['_id']", 16) }}
                 }
 
-                $result = $collection->insertOne($data);
+                $result = $collection->insertOne($data, [
+                    'session' => $this->getSession()
+                ]);
                 $data['_id'] = $result->getInsertedId();
 
                 $document->setId($data['_id']);
@@ -265,6 +271,10 @@
                     $query3['$push'] = $query['$push'];
                 }
 
+                if (!array_key_exists('session', $updateOptions)) {
+                    $updateOptions['session'] = $this->getSession();
+                }
+
                 foreach ([$query1, $query2, $query3] as $q) {
                     if (empty($q)) {
                         continue;
@@ -322,7 +332,12 @@
             $document->processOnDelete();
         }
 
-        $this->getCollection()->deleteMany(array('_id' => array('$in' => $ids)));
+        $this->getCollection()->deleteMany(
+            ['_id' => ['$in' => $ids]],
+            [
+                'session' => $this->getSession()
+            ]
+        );
 
         foreach ($documents as $document) {
             $document->postDeleteEvent();
@@ -353,7 +368,13 @@
     public function ensureIndexes()
     {
 {% for index in config_class._indexes %}
-         $this->getCollection()->createIndex({{ index.keys|var_export }}, {{ index.options is defined ? index.options|var_export : 'array()' }});
+        $indexOptions = {{ index.options is defined ? index.options|var_export : 'array()' }};
+        if (!array_key_exists('session', $indexOptions)) {
+            $indexOptions['session'] = $this->getSession();
+        }
+
+         $this->getCollection()->createIndex(
+             {{ index.keys|var_export }}, $indexOptions);
 {% endfor %}
     }
 
@@ -376,8 +397,17 @@
             );
             $ids = array_unique(array_values(array_map(function ($result) { return $result['{{ name }}']; }, iterator_to_array($cursor))));
             if (count($ids)) {
-                $collection = $this->getMandango()->getRepository('{{ reference.class }}')->getCollection();
-                $referenceCursor = $collection->find(array('_id' => array('$in' => $ids)), ['projection' => ['_id' => 1]]);
+                $repository = $this->getMandango()->getRepository('{{ reference.class }}');
+                $collection = $repository->getCollection();
+                $referenceCursor = $collection->find(
+                    [
+                        '_id' => ['$in' => $ids]
+                    ],
+                    [
+                        'projection' => ['_id' => 1],
+                        'session' => $repository->getSession()
+                    ]
+                );
                 $referenceIds =  array_values(array_map(function ($result) { return $result['_id']; }, iterator_to_array($referenceCursor)));
 
                 if ($idsDiff = array_diff($ids, $referenceIds)) {
@@ -399,7 +429,8 @@
                 [
                     'projection' => ['{{ name }}' => 1],
                     'limit'      => $documentsPerBatch,
-                    'skip'       => $skip
+                    'skip'       => $skip,
+                    'session'    => $this->getSession()
                 ]
             );
 
@@ -412,12 +443,23 @@
             $ids = array_unique($ids);
 
             if (count($ids)) {
-                $collection = $this->getMandango()->getRepository('{{ reference.class }}')->getCollection();
-                $referenceCursor = $collection->find(array('_id' => array('$in' => $ids)), ['projection' => ['_id' => 1]]);
+                $repository = $this->getMandango()->getRepository('{{ reference.class }}');
+                $collection = $repository->getCollection();
+                $referenceCursor = $collection->find(
+                    ['_id' => ['$in' => $ids]],
+                    [
+                        'projection' => ['_id' => 1],
+                        'session' => $repository->getSession()
+                    ]
+                );
                 $referenceIds =  array_values(array_map(function ($result) { return $result['_id']; }, iterator_to_array($referenceCursor)));
 
                 if ($idsDiff = array_diff($ids, $referenceIds)) {
-                    $this->update(array(), array('$pull' => array('{{ name }}' => array('$in' => $idsDiff))), array('multiple' => 1));
+                    $this->update(
+                        [],
+                        [ '$pull' => ['{{ name }}' => ['$in' => $idsDiff]] ],
+                        [ 'multiple' => 1 ]
+                    );
                 }
             }
 

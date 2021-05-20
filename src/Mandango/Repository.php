@@ -276,6 +276,15 @@ abstract class Repository
         return $this->createQuery(array('_id' => $id))->one();
     }
 
+    public function getSession()
+    {
+        $c = $this->getConnection();
+        if (empty($c)) {
+            throw new \UnexpectedValueException("Couldn't get the connection.");
+        }
+        return $c->getSession();
+    }
+
     /**
      * Count documents.
      *
@@ -287,7 +296,9 @@ abstract class Repository
      */
     public function count(array $query = array())
     {
-        return $this->getCollection()->count($query);
+        return $this->getCollection()->count($query, [
+            'session' => $this->getSession()
+        ]);
     }
 
     /**
@@ -301,6 +312,9 @@ abstract class Repository
      */
     public function update(array $query, array $newObject, array $options = array())
     {
+        if (!array_key_exists('session', $options)) {
+            $options['session'] = $this->getSession();
+        }
         return $this->getCollection()->updateMany($query, $newObject, $options);
     }
 
@@ -316,6 +330,9 @@ abstract class Repository
      */
     public function remove(array $query = array(), array $options = array())
     {
+        if (!array_key_exists('session', $options)) {
+            $options['session'] = $this->getSession();
+        }
         return $this->getCollection()->deleteMany($query, $options);
     }
 
@@ -333,6 +350,9 @@ abstract class Repository
      */
     public function aggregate(array $pipeline, array $options = array())
     {
+        if (!array_key_exists('session', $options)) {
+            $options['session'] = $this->getSession();
+        }
         return $this->getCollection()->aggregate($pipeline, $options);
     }
 
@@ -348,7 +368,9 @@ abstract class Repository
      */
     public function distinct($field, array $query = array())
     {
-        return $this->getCollection()->distinct($field, $query);
+        return $this->getCollection()->distinct($field, $query, [
+            'session' => $this->getSession()
+        ]);
     }
 
     /**
@@ -389,6 +411,9 @@ abstract class Repository
 
     private function command($command, $options = array())
     {
+        if (!array_key_exists('session', $options)) {
+            $options['session'] = $this->getSession();
+        }
         return $this->getDatabase()->command($command, $options);
     }
 
@@ -408,7 +433,9 @@ abstract class Repository
             if ($n == '_id_') {
                 break;
             }
-            $c->dropIndex($n);
+            $c->dropIndex($n, [
+                'session' => $this->getSession()
+            ]);
         }
     }
 }

@@ -556,6 +556,11 @@ abstract class Query implements \Countable, \IteratorAggregate
             $options['projection'] = $this->fields;
         //}
 
+        $r = $this->repository;
+        if (null !== $r) {
+            $options['session'] = $r->getSession();
+        }
+
         return $options;
     }
 

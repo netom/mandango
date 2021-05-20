@@ -130,11 +130,17 @@ class EmbeddedGroup extends Group
 
         $this->_root->addFieldCache($path);
 
-        $result = $this
-            ->_root
-            ->getRepository()
+        $repository = $this->_root->getRepository();
+
+        $result = $repository
             ->getCollection()
-            ->findOne(array('_id' => $this->_root->getId()), array($this->_path => true));
+            ->findOne(
+                [ '_id' => $this->_root->getId() ],
+                [
+                    $this->_path => true,
+                    'session' => $repository->getSession()
+                ]
+            );
 
         return ($result && isset($result[$this->_path])) ? (array)$result[$this->_path] : [];
     }

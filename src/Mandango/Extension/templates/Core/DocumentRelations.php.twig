@@ -45,9 +45,15 @@
     public function get{{ name|ucfirst }}()
     {
         $ids = array();
-        foreach ($this->getMandango()->getRepository('{{ relation.through }}')->getCollection()
-            ->find(array('{{ relation.local }}' => $this->getId()), ['projection' => ['{{ relation.foreign }}' => 1]])
-        as $value) {
+        $repository = $this->getMandango()->getRepository('{{ relation.through }}');
+        $cursor = $repository->getCollection()->find(
+            ['{{ relation.local }}' => $this->getId()],
+            [
+                'projection' => ['{{ relation.foreign }}' => 1],
+                'session' => $repository->getSession()
+            ]
+        );
+        foreach ($cursor as $value) {
             $ids[] = $value['{{ relation.foreign }}'];
         }
 

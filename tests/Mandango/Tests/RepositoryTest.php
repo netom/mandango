@@ -267,6 +267,7 @@ class RepositoryTest extends TestCase
         ;
 
         $repository = new RepositoryMock($this->mandango);
+        $repository->setConnection($this->mandango->getDefaultConnection());
         $repository->setCollection($collection);
         $this->assertSame($count, $repository->count($criteria));
     }
@@ -288,6 +289,7 @@ class RepositoryTest extends TestCase
 
         $repository = new RepositoryMock($this->mandango);
         $repository->setCollection($collection);
+        $repository->setConnection($this->mandango->getDefaultConnection());
         $repository->update($criteria, $newObject);
         $this->addToAssertionCount(1);
     }
@@ -308,6 +310,7 @@ class RepositoryTest extends TestCase
 
         $repository = new RepositoryMock($this->mandango);
         $repository->setCollection($collection);
+        $repository->setConnection($this->mandango->getDefaultConnection());
         $repository->remove($criteria);
         $this->addToAssertionCount(1);
     }
@@ -336,6 +339,7 @@ class RepositoryTest extends TestCase
 
         $repository = new RepositoryMock($this->mandango);
         $repository->setCollection($collection);
+        $repository->setConnection($this->mandango->getDefaultConnection());
 
         $repository->aggregate($pipeline);
     }
@@ -356,6 +360,7 @@ class RepositoryTest extends TestCase
 
         $repository = $this->createRepositoryMock()
             ->setCollection($collection);
+        $repository->setConnection($this->mandango->getDefaultConnection());
 
         $this->assertSame($return, $repository->distinct($field, $query));
     }
@@ -416,7 +421,7 @@ class RepositoryTest extends TestCase
         $reduce = new \MongoDB\BSON\Javascript('reduce');
         $out = array('replace' => 'replaceCollectionName');
         $query = array('foo' => 'bar');
-        $options = array('ups' => 2);
+        $options = array('ups' => 2, 'session' => null);
 
         $expectedCommand = array(
             'mapreduce' => $collectionName,

@@ -103,7 +103,15 @@ abstract class Document extends AbstractDocument
             throw new \LogicException('The document is new.');
         }
 
-        $this->setDocumentData($this->getRepository()->getCollection()->findOne(array('_id' => $this->getId())), true);
+        $this->setDocumentData($this->getRepository()->getCollection()->findOne(
+            [
+                '_id' => $this->getId()
+            ],
+            [
+                // TODO: what about the other options?
+                'session' => $this->getRepository()->getSession()
+            ]
+        ), true);
 
         return $this;
     }

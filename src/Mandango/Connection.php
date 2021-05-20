@@ -35,6 +35,7 @@ class Connection
 
     private $client;
     private $database;
+    private $session;
 
     /**
      * Constructor.
@@ -180,6 +181,20 @@ class Connection
         }
 
         return $this->client;
+    }
+
+    public function getSession()
+    {
+        if (null === $this->session) {
+            $this->newSession();
+        }
+        return $this->session;
+    }
+
+    public function newSession()
+    {
+        return $this->session = $this->getClient()->startSession();
+        var_dump($this->session);
     }
 
     /**

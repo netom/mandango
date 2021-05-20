@@ -48,7 +48,8 @@ class SequenceIdGenerator extends BaseIdGenerator
         '\$inc' => ['sequence' => $increment]
     ],
     'new'           => true,
-    'upsert'        => true
+    'upsert'        => true,
+    'session'       => \$repository->getSession(),
 ], ['readPreference' => new \MongoDB\Driver\ReadPreference(\MongoDB\Driver\ReadPreference::RP_PRIMARY)]))[0]['value']['sequence'];
 EOF;
     }

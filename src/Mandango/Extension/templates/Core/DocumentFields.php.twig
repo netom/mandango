@@ -88,8 +88,15 @@
                 $this->_root->addFieldCache($path);
 
                 // TODO: a document should be able to return it's collection and connection shouldn't it?
-                $collection = $this->getMandango()->getRepository(get_class($this->_root))->getCollection();
-                $data = $collection->findOne(array('_id' => $this->_root->getId()), ['projection' => [$field => 1]]);
+                $repository = $this->getMandango()->getRepository(get_class($this->_root));
+                $collection = $repository->getCollection();
+                $data = $collection->findOne(
+                    [ '_id' => $this->_root->getId() ],
+                    [
+                        'projection' => [$field => 1],
+                        'session' => $repository->getSession()
+                    ]
+                );
                 foreach (explode('.', $field) as $key) {
                     if (!isset($data[$key])) {
                         $data = null;
@@ -109,7 +116,13 @@
                 $this->data['fields']['{{ name }}'] = null;
             } elseif (!isset($this->data['fields']) || !array_key_exists('{{ name }}', $this->data['fields'])) {
                 $this->addFieldCache('{{ field.dbName }}');
-                $data = $this->getRepository()->getCollection()->findOne(['_id' => $this->getId()], ['projection' => ['{{ field.dbName }}' => 1]]);
+                $data = $this->getRepository()->getCollection()->findOne(
+                    ['_id' => $this->getId()],
+                    [
+                        'projection' => ['{{ field.dbName }}' => 1],
+                        'session' => $this->getRepository()->getSession()
+                    ]
+                );
                 if (isset($data['{{ field.dbName }}'])) {
                     {{ mandango_type_to_php(field.type, "$data['" ~ field.dbName ~ "']", "$this->data['fields']['" ~ name ~ "']") }}
                 } else {
