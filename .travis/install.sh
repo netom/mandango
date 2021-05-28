@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yes "" | pecl install apcu-5.1.8
+yes "" | pecl install apcu-5.1.20
 yes "" | pecl install mongodb
 
 echo 'extension = apcu.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini

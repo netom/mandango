@@ -1,6 +1,7 @@
 .phpunit.result.cache
 composer-temp.phar
 composer.phar
+composer.lock
 /tests/Model/Base/
 /tests/Model/Mapping/
 /vendor/

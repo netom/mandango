@@ -898,9 +898,9 @@ EOF
      * The _has_references, _has_groups, and _indexes properties are computed
      * using this logic.
      */
-    private function embeddedRecursivePropertyProcess($propertyName, $configClassName, $configClass, $getter, $aggregator)
+    private function embeddedRecursivePropertyProcess($propertyName, $configClassName, \ArrayObject $configClass, $getter, $aggregator)
     {
-        if (array_key_exists($propertyName, $configClass)) {
+        if ($configClass->offsetExists($propertyName)) {
             return $configClass[$propertyName];
         }
 
@@ -908,8 +908,8 @@ EOF
 
         $embeddedResults = [];
         foreach (array_merge(
-            array_key_exists('embeddedsOne', $configClass) ? $configClass['embeddedsOne'] : [],
-            array_key_exists('embeddedsMany', $configClass) ? $configClass['embeddedsMany'] : []
+            $configClass->offsetExists('embeddedsOne')  ? $configClass['embeddedsOne'] : [],
+            $configClass->offsetExists('embeddedsMany') ? $configClass['embeddedsMany'] : []
         ) as $embeddedName => $embedded) {
             // TODO: fix large diameter loops too
             if ($embedded['class'] == $configClassName) continue; // Skip self-embeds
@@ -926,8 +926,8 @@ EOF
                 // Getter
                 function($configClass) {
                     return
-                        array_key_exists('referencesOne', $configClass) ||
-                        array_key_exists('referencesMany', $configClass);
+                        $configClass->offsetExists('referencesOne') ||
+                        $configClass->offsetExists('referencesMany');
                 },
                 // Aggregator
                 function($configClassName, $result, $embeddedResults) {
@@ -948,8 +948,8 @@ EOF
                 // Getter
                 function($configClass) {
                     return
-                        array_key_exists('embeddedsMany', $configClass) ||
-                        array_key_exists('referencesMany', $configClass);
+                        $configClass->offsetExists('embeddedsMany') ||
+                        $configClass->offsetExists('referencesMany');
                 },
                 // Aggregator
                 function($configClassName, $result, $embeddedResults) {
@@ -969,7 +969,7 @@ EOF
             $this->embeddedRecursivePropertyProcess('_indexes', $configClassName, $configClass,
                 // Getter
                 function ($configClass) {
-                    return array_key_exists('indexes', $configClass) ? $configClass['indexes'] : [];
+                    return $configClass->offsetExists('indexes') ? $configClass['indexes'] : [];
                 },
                 // Aggregator
                 function ($configClassName, $result, $embeddedResults) {
@@ -1080,9 +1080,9 @@ EOF
         }
     }
 
-    private function mapArrayKeyWithDefault($array, $key, array $mapCallback, $default)
+    private function mapArrayKeyWithDefault(\ArrayObject $array, $key, array $mapCallback, $default)
     {
-        if (array_key_exists($key, $array)) {
+        if ($array->offsetExists($key)) {
             return call_user_func($mapCallback, $array[$key]);
         }
 
