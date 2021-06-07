@@ -238,28 +238,28 @@ class QueryTest extends TestCase
         $this->query->hint($value);
     }
 
-    public function testSlaveOkay()
+    public function testSecondaryOkay()
     {
         $query = $this->query;
-        $this->assertNull($query->getSlaveOkay());
+        $this->assertNull($query->getSecondaryOkay());
 
-        $this->assertSame($query, $query->slaveOkay(true));
-        $this->assertTrue($query->getSlaveOkay());
+        $this->assertSame($query, $query->secondaryOkay(true));
+        $this->assertTrue($query->getSecondaryOkay());
 
-        $this->assertSame($query, $query->slaveOkay(false));
-        $this->assertFalse($query->getSlaveOkay());
+        $this->assertSame($query, $query->secondaryOkay(false));
+        $this->assertFalse($query->getSecondaryOkay());
 
-        $query->slaveOkay(null);
-        $this->assertNull($query->getSlaveOkay());
+        $query->secondaryOkay(null);
+        $this->assertNull($query->getSecondaryOkay());
     }
 
     /**
      * @dataProvider      providerNotBoolean
      */
-    public function testSlaveOkayNotBoolean($value)
+    public function testSecondaryOkayNotBoolean($value)
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->query->slaveOkay($value);
+        $this->query->secondaryOkay($value);
     }
 
     public function testTimeout()
