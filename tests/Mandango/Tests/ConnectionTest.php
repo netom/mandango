@@ -39,6 +39,17 @@ class ConnectionTest extends TestCase
         $this->assertSame(array('connect' => true), $connection->getOptions());
     }
 
+    public function testSession()
+    {
+        $connection = new Connection($this->uri, $this->dbName);
+        $this->assertNull($connection->getSession());
+
+        $session = $connection->startSession();
+
+        $this->assertInstanceOf('MongoDB\\Driver\\Session', $session);
+        $this->assertSame($session, $connection->getSession());
+    }
+
     public function testSetUri()
     {
         $connection = new Connection($this->uri, $this->dbName);

@@ -46,7 +46,10 @@
     {
         $ids = array();
         foreach ($this->getMandango()->getRepository('{{ relation.through }}')->getCollection()
-            ->find(array('{{ relation.local }}' => $this->getId()), ['projection' => ['{{ relation.foreign }}' => 1]])
+            ->find(
+                ['{{ relation.local }}' => $this->getId()],
+                $this->createOptions(['projection' => ['{{ relation.foreign }}' => 1]])
+            )
         as $value) {
             $ids[] = $value['{{ relation.foreign }}'];
         }

@@ -58,6 +58,29 @@ abstract class Repository
     }
 
     /**
+     * Returns the current session associated with the connection
+     * 
+     * @return \MongoDB\Driver\Session | null
+     */
+    public function getSession()
+    {
+        $connection = $this->getConnection();
+        if (null === $connection) {
+            return null;
+        }
+        return $connection->getSession();
+    }
+
+    public function createOptions(array $options = [])
+    {
+        $session = $this->getSession();
+        if (null !== $session && !array_key_exists('session', $options)) {
+            $options['session'] = $session;
+        }
+        return $options;
+    }
+
+    /**
      * Returns the identity map.
      *
      * @return \Mandango\IdentityMapInterface The identity map.
@@ -287,7 +310,7 @@ abstract class Repository
      */
     public function count(array $query = array())
     {
-        return $this->getCollection()->count($query);
+        return $this->getCollection()->count($query, $this->createOptions());
     }
 
     /**
@@ -301,7 +324,7 @@ abstract class Repository
      */
     public function update(array $query, array $newObject, array $options = array())
     {
-        return $this->getCollection()->updateMany($query, $newObject, $options);
+        return $this->getCollection()->updateMany($query, $newObject, $this->createOptions($options));
     }
 
     /**
@@ -314,9 +337,9 @@ abstract class Repository
      *
      * @api
      */
-    public function remove(array $query = array(), array $options = array())
+    public function remove(array $query = [], array $options = [])
     {
-        return $this->getCollection()->deleteMany($query, $options);
+        return $this->getCollection()->deleteMany($query, $this->createOptions($options));
     }
 
     /**
@@ -331,9 +354,9 @@ abstract class Repository
      *
      * @api
      */
-    public function aggregate(array $pipeline, array $options = array())
+    public function aggregate(array $pipeline, array $options = [])
     {
-        return $this->getCollection()->aggregate($pipeline, $options);
+        return $this->getCollection()->aggregate($pipeline, $this->createOptions($options));
     }
 
     /**
@@ -346,9 +369,9 @@ abstract class Repository
      *
      * @api
      */
-    public function distinct($field, array $query = array())
+    public function distinct($field, array $query = [], $options = [])
     {
-        return $this->getCollection()->distinct($field, $query);
+        return $this->getCollection()->distinct($field, $query, $this->createOptions($options));
     }
 
     /**
@@ -387,9 +410,9 @@ abstract class Repository
         return $this->getDatabase()->selectCollection($result['result'])->find();
     }
 
-    private function command($command, $options = array())
+    private function command($command, $options = [])
     {
-        return $this->getDatabase()->command($command, $options);
+        return $this->getDatabase()->command($command, $this->createOptions($options));
     }
 
     private function getDatabase()
@@ -403,12 +426,12 @@ abstract class Repository
     public function dropIndexes()
     {
         $c = $this->getCollection();
-        foreach ($c->listIndexes() as $i) {
+        foreach ($c->listIndexes($this->createOptions()) as $i) {
             $n = $i->getName();
             if ($n == '_id_') {
                 break;
             }
-            $c->dropIndex($n);
+            $c->dropIndex($n, $this->createOptions());
         }
     }
 }

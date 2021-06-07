@@ -25,13 +25,20 @@ class Connection
     private $options;
 
     /**
+     * The current session
+     * 
+     * If this is non-null, it gets passed to every operation.
+     * 
+     * @see https://www.php.net/mongodb-driver-session
+     * @var \MongoDB\Driver\Session
+     */
+    private $session;
+
+    /**
      * @see https://docs.mongodb.com/php-library/master/reference/method/MongoDBClient__construct/#definition
      * @var array
      */
     private $driverOptions;
-
-    private $loggerCallable;
-    private $logDefault;
 
     private $client;
     private $database;
@@ -192,5 +199,23 @@ class Connection
         }
 
         return $this->database;
+    }
+
+    public function getSession()
+    {
+        return $this->session;
+    }
+
+    public function startSession($options = [])
+    {
+        if (null === $this->session) {
+            $this->session = $this->getClient()->startSession($options);
+        }
+        return $this->session;
+    }
+
+    public function clearSession()
+    {
+        $this->session = null;
     }
 }

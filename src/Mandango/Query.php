@@ -552,9 +552,12 @@ abstract class Query implements \Countable, \IteratorAggregate
             $options['maxTimeMS'] = $this->timeout;
         }
 
-        //if (null !== $this->fields) {
-            $options['projection'] = $this->fields;
-        //}
+        $options['projection'] = $this->fields;
+
+        $session = $this->repository->getSession();
+        if (null !== $session) {
+            $options['session'] = $session;
+        }
 
         return $options;
     }

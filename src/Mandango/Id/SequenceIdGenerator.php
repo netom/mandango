@@ -49,7 +49,8 @@ class SequenceIdGenerator extends BaseIdGenerator
     ],
     'new'           => true,
     'upsert'        => true
-], ['readPreference' => new \MongoDB\Driver\ReadPreference(\MongoDB\Driver\ReadPreference::RP_PRIMARY)]))[0]['value']['sequence'];
+], \$repository->createOptions(['readPreference' => new \MongoDB\Driver\ReadPreference(\MongoDB\Driver\ReadPreference::RP_PRIMARY)])
+))[0]['value']['sequence'];
 EOF;
     }
 

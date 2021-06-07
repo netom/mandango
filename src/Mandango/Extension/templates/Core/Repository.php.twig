@@ -138,7 +138,10 @@
             }
 
             if ($a) {
-                $collection->insertMany(array_values($a), $insertManyOptions);
+                $collection->insertMany(
+                    array_values($a),
+                    $this->createOptions($insertManyOptions)
+                );
 
                 foreach ($a as $oid => $data) {
                     $document = $inserts[$oid];
@@ -189,7 +192,10 @@
                     {{ mandango_id_generator(config_class, "$data['_id']", 16) }}
                 }
 
-                $result = $collection->insertOne($data);
+                $result = $collection->insertOne(
+                    $data,
+                    $this->createOptions()
+                );
                 $data['_id'] = $result->getInsertedId();
 
                 $document->setId($data['_id']);
@@ -269,7 +275,11 @@
                     if (empty($q)) {
                         continue;
                     }
-                    $collection->updateOne(['_id' => $this->idToMongo($document->getId())], $q, $updateOptions);
+                    $collection->updateOne(
+                        ['_id' => $this->idToMongo($document->getId())],
+                        $q,
+                        $this->createOptions($updateOptions)
+                    );
                 }
 
                 $document->clearModified();
@@ -322,7 +332,10 @@
             $document->processOnDelete();
         }
 
-        $this->getCollection()->deleteMany(array('_id' => array('$in' => $ids)));
+        $this->getCollection()->deleteMany(
+            ['_id' => ['$in' => $ids]],
+            $this->createOptions()
+        );
 
         foreach ($documents as $document) {
             $document->postDeleteEvent();
@@ -353,7 +366,10 @@
     public function ensureIndexes()
     {
 {% for index in config_class._indexes %}
-         $this->getCollection()->createIndex({{ index.keys|var_export }}, {{ index.options is defined ? index.options|var_export : 'array()' }});
+        $this->getCollection()->createIndex(
+             {{ index.keys|var_export }},
+             $this->createOptions({{ index.options is defined ? index.options|var_export : '[]' }})
+        );
 {% endfor %}
     }
 
@@ -368,16 +384,19 @@
         do {
             $cursor = $this->getCollection()->find(
                 ['{{ name }}' => ['$exists' => 1]],
-                [
+                $this->createOptions([
                     'projection' => ['{{ name }}' => 1],
                     'limit'      => $documentsPerBatch,
                     'skip'       => $skip
-                ]
+                ])
             );
             $ids = array_unique(array_values(array_map(function ($result) { return $result['{{ name }}']; }, iterator_to_array($cursor))));
             if (count($ids)) {
                 $collection = $this->getMandango()->getRepository('{{ reference.class }}')->getCollection();
-                $referenceCursor = $collection->find(array('_id' => array('$in' => $ids)), ['projection' => ['_id' => 1]]);
+                $referenceCursor = $collection->find(
+                    ['_id' => array('$in' => $ids)],
+                    $this->createOptions(['projection' => ['_id' => 1]])
+                );
                 $referenceIds =  array_values(array_map(function ($result) { return $result['_id']; }, iterator_to_array($referenceCursor)));
 
                 if ($idsDiff = array_diff($ids, $referenceIds)) {
@@ -396,11 +415,11 @@
         do {
             $cursor = $this->getCollection()->find(
                 ['{{ name }}' => ['$exists' => 1]],
-                [
+                $this->createOptions([
                     'projection' => ['{{ name }}' => 1],
                     'limit'      => $documentsPerBatch,
                     'skip'       => $skip
-                ]
+                ])
             );
 
             $ids = [];
@@ -413,7 +432,10 @@
 
             if (count($ids)) {
                 $collection = $this->getMandango()->getRepository('{{ reference.class }}')->getCollection();
-                $referenceCursor = $collection->find(array('_id' => array('$in' => $ids)), ['projection' => ['_id' => 1]]);
+                $referenceCursor = $collection->find(
+                    ['_id' => array('$in' => $ids)],
+                    $this->createOptions(['projection' => ['_id' => 1]])
+                );
                 $referenceIds =  array_values(array_map(function ($result) { return $result['_id']; }, iterator_to_array($referenceCursor)));
 
                 if ($idsDiff = array_diff($ids, $referenceIds)) {

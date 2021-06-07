@@ -89,6 +89,24 @@ abstract class Document extends AbstractDocument
     }
 
     /**
+     * Create an options array to be used with find/insert/update/delete operations
+     * 
+     * It automatically creates a "session" key if there's a current session
+     * with the connection.
+     * 
+     * @param array $options The options
+     * @return array
+     */
+    public function createOptions(array $options = [])
+    {
+        $session = $this->getRepository()->getSession();
+        if (null !== $session && !array_key_exists('session', $options)) {
+            $options['session'] = $session;
+        }
+        return $options;
+    }
+
+    /**
      * Refresh the document data from the database.
      *
      * @return \Mandango\Document\Document The document (fluent interface).
@@ -97,13 +115,16 @@ abstract class Document extends AbstractDocument
      *
      * @api
      */
-    public function refresh()
+    public function refresh(array $options = [])
     {
         if ($this->isNew()) {
             throw new \LogicException('The document is new.');
         }
 
-        $this->setDocumentData($this->getRepository()->getCollection()->findOne(array('_id' => $this->getId())), true);
+        $this->setDocumentData($this->getRepository()->getCollection()->findOne(
+            [ '_id' => $this->getId() ],
+            $this->createOptions($options)
+        ), true);
 
         return $this;
     }
@@ -117,13 +138,13 @@ abstract class Document extends AbstractDocument
      *
      * @api
      */
-    public function save(array $options = array())
+    public function save(array $options = [])
     {
         if ($this->isNew()) {
             $insertManyOptions = $options;
-            $updateOptions = array();
+            $updateOptions = [];
         } else {
-            $insertManyOptions = array();
+            $insertManyOptions = [];
             $updateOptions = $options;
         }
 
@@ -139,7 +160,7 @@ abstract class Document extends AbstractDocument
      *
      * @api
      */
-    public function delete(array $options = array())
+    public function delete(array $options = [])
     {
         $this->getRepository()->delete($this, $options);
     }

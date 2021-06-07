@@ -89,7 +89,10 @@
 
                 // TODO: a document should be able to return it's collection and connection shouldn't it?
                 $collection = $this->getMandango()->getRepository(get_class($this->_root))->getCollection();
-                $data = $collection->findOne(array('_id' => $this->_root->getId()), ['projection' => [$field => 1]]);
+                $data = $collection->findOne(
+                    ['_id' => $this->_root->getId()],
+                    $this->_root->createOptions(['projection' => [$field => 1]])
+                );
                 foreach (explode('.', $field) as $key) {
                     if (!isset($data[$key])) {
                         $data = null;
@@ -109,7 +112,10 @@
                 $this->data['fields']['{{ name }}'] = null;
             } elseif (!isset($this->data['fields']) || !array_key_exists('{{ name }}', $this->data['fields'])) {
                 $this->addFieldCache('{{ field.dbName }}');
-                $data = $this->getRepository()->getCollection()->findOne(['_id' => $this->getId()], ['projection' => ['{{ field.dbName }}' => 1]]);
+                $data = $this->getRepository()->getCollection()->findOne(
+                    ['_id' => $this->getId()],
+                    $this->createOptions(['projection' => ['{{ field.dbName }}' => 1]])
+                );
                 if (isset($data['{{ field.dbName }}'])) {
                     {{ mandango_type_to_php(field.type, "$data['" ~ field.dbName ~ "']", "$this->data['fields']['" ~ name ~ "']") }}
                 } else {
