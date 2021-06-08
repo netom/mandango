@@ -382,7 +382,7 @@ class RepositoryTest extends TestCase
                 }
             ));
 
-        $gscn = 6; // Get Session Called N times
+        $gscn = 7; // Get Session Called N times
 
         $connectionMock = $this->createConnectionMockWithMongoDatabase($database);
         $connectionMock
@@ -441,6 +441,16 @@ class RepositoryTest extends TestCase
                     return $result;
                 }
             ));
+        $collectionMock
+            ->expects($this->once())
+            ->method('find')
+            ->will($this->returnCallback(
+                function ($c, $options) use ($result, $dummySession) {
+                    $this->assertArrayHasKey('session', $options);
+                    $this->assertSame($dummySession, $options['session']);
+                    return $result;
+                }
+            ));
 
         $repository = $this->createRepositoryMock()
             ->setCollection($collectionMock)
@@ -452,6 +462,9 @@ class RepositoryTest extends TestCase
         $gscn--; $this->assertEquals($result, $repository->aggregate([]));
         $gscn--; $this->assertEquals($result, $repository->distinct('field'));
         $gscn--; $this->assertEquals($result, $repository->mapReduce([], [], ['inline' => 1]));
+
+        $articleQuery = new \Model\ArticleQuery($repository);
+        $gscn--; $this->assertEquals($result, $articleQuery->createCursor());
 
         $this->assertEquals(0, $gscn);
     }
