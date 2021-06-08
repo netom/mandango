@@ -14,7 +14,6 @@ namespace Mandango\Tests;
 use Mandango\Repository as BaseRepository;
 use Mandango\Connection;
 use Mandango\Mandango;
-use Mandango\Query;
 
 class Repository extends BaseRepository
 {
@@ -358,6 +357,103 @@ class RepositoryTest extends TestCase
             ->setCollection($collection);
 
         $this->assertSame($return, $repository->distinct($field, $query));
+    }
+
+    public function testSession()
+    {
+        $result = 42;
+
+        $mrResult = [
+            'ok' => true,
+            'results' => $result
+        ];
+
+        $dummySession = 123456;
+
+        $database = $this->createMongoDatabaseMock();
+        $database
+            ->expects($this->once())
+            ->method('command')
+            ->will($this->returnCallback(
+                function ($c, $options) use ($mrResult, $dummySession) {
+                    $this->assertArrayHasKey('session', $options);
+                    $this->assertSame($dummySession, $options['session']);
+                    return $mrResult;
+                }
+            ));
+
+        $gscn = 6; // Get Session Called N times
+
+        $connectionMock = $this->createConnectionMockWithMongoDatabase($database);
+        $connectionMock
+            ->expects($this->exactly($gscn)) // Exactly once for every operation
+            ->method('getSession')
+            ->will($this->returnValue($dummySession));
+
+        $collectionMock = $this->createCollectionMock();
+        $collectionMock
+            ->expects($this->once())
+            ->method('count')
+            ->will($this->returnCallback(
+                function ($q, $options) use ($result, $dummySession) {
+                    $this->assertArrayHasKey('session', $options);
+                    $this->assertSame($dummySession, $options['session']);
+                    return $result;
+                }
+            ));
+        $collectionMock
+            ->expects($this->once())
+            ->method('updateMany')
+            ->will($this->returnCallback(
+                function ($q, $no, $options) use ($result, $dummySession) {
+                    $this->assertArrayHasKey('session', $options);
+                    $this->assertSame($dummySession, $options['session']);
+                    return $result;
+                }
+            ));
+        $collectionMock
+            ->expects($this->once())
+            ->method('deleteMany')
+            ->will($this->returnCallback(
+                function ($q, $options) use ($result, $dummySession) {
+                    $this->assertArrayHasKey('session', $options);
+                    $this->assertSame($dummySession, $options['session']);
+                    return $result;
+                }
+            ));
+        $collectionMock
+            ->expects($this->once())
+            ->method('aggregate')
+            ->will($this->returnCallback(
+                function ($p, $options) use ($result, $dummySession) {
+                    $this->assertArrayHasKey('session', $options);
+                    $this->assertSame($dummySession, $options['session']);
+                    return $result;
+                }
+            ));
+        $collectionMock
+            ->expects($this->once())
+            ->method('distinct')
+            ->will($this->returnCallback(
+                function ($f, $p, $options) use ($result, $dummySession) {
+                    $this->assertArrayHasKey('session', $options);
+                    $this->assertSame($dummySession, $options['session']);
+                    return $result;
+                }
+            ));
+
+        $repository = $this->createRepositoryMock()
+            ->setCollection($collectionMock)
+            ->setConnection($connectionMock);
+        
+        $gscn--; $this->assertEquals($result, $repository->count());
+        $gscn--; $this->assertEquals($result, $repository->update([], []));
+        $gscn--; $this->assertEquals($result, $repository->remove());
+        $gscn--; $this->assertEquals($result, $repository->aggregate([]));
+        $gscn--; $this->assertEquals($result, $repository->distinct('field'));
+        $gscn--; $this->assertEquals($result, $repository->mapReduce([], [], ['inline' => 1]));
+
+        $this->assertEquals(0, $gscn);
     }
 
     public function testMapReduce()

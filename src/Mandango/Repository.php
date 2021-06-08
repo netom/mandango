@@ -308,7 +308,7 @@ abstract class Repository
      *
      * @api
      */
-    public function count(array $query = array())
+    public function count(array $query = [])
     {
         return $this->getCollection()->count($query, $this->createOptions());
     }
