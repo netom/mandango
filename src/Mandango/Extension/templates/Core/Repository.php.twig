@@ -363,12 +363,13 @@
     /**
      * Ensure the indexes.
      */
-    public function ensureIndexes()
+    public function ensureIndexes(array $options = [])
     {
 {% for index in config_class._indexes %}
+        $indexOptions = {{ index.options is defined ? index.options|var_export : '[]' }};
         $this->getCollection()->createIndex(
              {{ index.keys|var_export }},
-             $this->createOptions({{ index.options is defined ? index.options|var_export : '[]' }})
+             $this->createOptions(array_merge($indexOptions, $options))
         );
 {% endfor %}
     }

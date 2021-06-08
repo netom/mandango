@@ -334,11 +334,11 @@ class Mandango
      *
      * @api
      */
-    public function ensureAllIndexes()
+    public function ensureAllIndexes(array $listIndexesOptions = [], array $dropIndexOptions = [], $createIndexOptions = [])
     {
         foreach ($this->getAllRepositories() as $repository) {
-            $repository->dropIndexes();
-            $repository->ensureIndexes();
+            $repository->dropIndexes($listIndexesOptions, $dropIndexOptions);
+            $repository->ensureIndexes($createIndexOptions);
         }
     }
 

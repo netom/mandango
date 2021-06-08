@@ -423,15 +423,15 @@ abstract class Repository
     /**
      * Remove all indexes
      */
-    public function dropIndexes()
+    public function dropIndexes(array $listIndexesOptions = [], array $dropIndexOptions = [])
     {
         $c = $this->getCollection();
-        foreach ($c->listIndexes($this->createOptions()) as $i) {
+        foreach ($c->listIndexes($this->createOptions($listIndexesOptions)) as $i) {
             $n = $i->getName();
             if ($n == '_id_') {
                 break;
             }
-            $c->dropIndex($n, $this->createOptions());
+            $c->dropIndex($n, $this->createOptions($dropIndexOptions));
         }
     }
 }
