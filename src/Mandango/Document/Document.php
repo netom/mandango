@@ -215,6 +215,36 @@ abstract class Document extends AbstractDocument
             if (!is_array($value)) {
                 $value = array();
             }
+            if (!array_key_exists('fields', $value) || !is_array($value['fields'])) {
+                $value['fields'] = [];
+            }
+            /* Check for path collision:
+             * https://docs.mongodb.com/manual/release-notes/4.4-compatibility/#path-collision-restrictions
+             */
+            $newFields = [];
+            foreach ($value['fields'] as $cachedField => $_) {
+                $fieldLength       = strlen($field);
+                $cachedFieldLength = strlen($cachedField);
+                if (
+                    $cachedFieldLength > $fieldLength &&
+                    substr($cachedField, 0, $fieldLength) === $field &&
+                    $cachedField[$fieldLength] === '.'
+                ) {
+                    // $cachedField is a sub-field of the object at $field, drop $cachedField
+                    continue;
+                }
+                if (
+                    $fieldLength > $cachedFieldLength &&
+                    substr($field, 0, $cachedFieldLength) === $cachedField &&
+                    $field[$cachedFieldLength] === '.'
+                ) {
+                    // $field is a sub-field of the object at $cachedField, don't add it to the cache.
+                    return;
+                }
+                $newFields[$cachedField] = 1;
+            }
+            $value['fields'] = $newFields;
+
             $value['fields'][$field] = 1;
             $cache->set($hash, $value);
         }

@@ -65,6 +65,14 @@ class DocumentTest extends TestCase
         $article->addFieldCache('comments.infos');
         $this->assertSame(array('title' => 1, 'source.name' => 1, 'note' => 1, 'comments.infos' => 1), $query1->getFieldsCache());
         $this->assertSame(array('note' => 1, 'comments.infos' => 1), $query2->getFieldsCache());
+
+        // Try to cause path collision
+        $article->addFieldCache('comments');
+        $this->assertSame(array('title' => 1, 'source.name' => 1, 'note' => 1, 'comments' => 1), $query1->getFieldsCache());
+        $this->assertSame(array('note' => 1, 'comments' => 1), $query2->getFieldsCache());
+        $article->addFieldCache('comments.infos');
+        $this->assertSame(array('title' => 1, 'source.name' => 1, 'note' => 1, 'comments' => 1), $query1->getFieldsCache());
+        $this->assertSame(array('note' => 1, 'comments' => 1), $query2->getFieldsCache());
     }
 
     public function testAddReferenceCache()
